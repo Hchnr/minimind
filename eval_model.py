@@ -15,6 +15,7 @@ def init_model(args):
         moe_path = '_moe' if args.use_moe else ''
         modes = {0: 'pretrain', 1: 'full_sft', 2: 'rlhf', 3: 'reason', 4: 'grpo'}
         ckp = f'./{args.out_dir}/{modes[args.model_mode]}_{args.hidden_size}{moe_path}.pth'
+        # ckp = "/share/project/hcr/models/gongjy/MiniMind2-PyTorch/full_sft_512.pth"
 
         model = MiniMindForCausalLM(MiniMindConfig(
             hidden_size=args.hidden_size,
@@ -29,6 +30,7 @@ def init_model(args):
             load_lora(model, f'./{args.out_dir}/lora/{args.lora_name}_{args.hidden_size}.pth')
     else:
         transformers_model_path = './MiniMind2'
+        # transformers_model_path = "/share/project/hcr/models/gongjy/MiniMind2"
         tokenizer = AutoTokenizer.from_pretrained(transformers_model_path)
         model = AutoModelForCausalLM.from_pretrained(transformers_model_path, trust_remote_code=True)
     print(f'MiniMind模型参数量: {sum(p.numel() for p in model.parameters() if p.requires_grad) / 1e6:.2f}M(illion)')
